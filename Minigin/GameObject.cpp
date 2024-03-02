@@ -1,11 +1,30 @@
+#include "pch.h"
 #include <string>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "BaseComponent.h"
+#include "MessageWrapper.h"
 
 dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update(){}
+void dae::GameObject::Update()
+{
+	UpdateComponents([](std::shared_ptr<BaseComponent>& component)
+	{
+		component->Update();
+	});
+	HandleMessages();
+}
+
+void dae::GameObject::FixedUpdate()
+{
+	UpdateComponents([](std::shared_ptr<BaseComponent>& component)
+	{
+		component->FixedUpdate();
+	});
+	HandleMessages();
+}
 
 void dae::GameObject::Render() const
 {
@@ -21,4 +40,28 @@ void dae::GameObject::SetTexture(const std::string& filename)
 void dae::GameObject::SetPosition(float x, float y)
 {
 	m_transform.SetPosition(x, y, 0.0f);
+}
+
+void dae::GameObject::AddMessages(const std::shared_ptr<BaseComponent>& component)
+{
+	std::vector<dae::MessageWrapper*>& messages{ component->GetMessages() };
+	for (MessageWrapper* pMessage : messages)
+		m_MessageQueue.push(pMessage);
+
+}
+
+void dae::GameObject::HandleMessages()
+{
+	while (!m_MessageQueue.empty())
+	{
+		MessageWrapper* pMessage{ m_MessageQueue.front() };
+		for (auto it = m_Components.begin(); it != m_Components.end(); ++it)
+		{
+			std::shared_ptr<BaseComponent>& component{ *it };
+			component->ReceiveMessage(pMessage);
+		}
+		delete pMessage;
+		pMessage = nullptr;
+		m_MessageQueue.pop();
+	}
 }
