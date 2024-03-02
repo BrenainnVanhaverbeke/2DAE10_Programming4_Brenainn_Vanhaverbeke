@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Scene.h"
 #include "GameObject.h"
 
@@ -7,38 +8,46 @@ using namespace dae;
 
 unsigned int Scene::m_idCounter = 0;
 
-Scene::Scene(const std::string& name) : m_name(name) {}
+Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() = default;
 
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
-	m_objects.emplace_back(std::move(object));
+	m_Objects.emplace_back(std::move(object));
 }
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
-	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+	m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
 }
 
 void Scene::RemoveAll()
 {
-	m_objects.clear();
+	m_Objects.clear();
 }
 
 void Scene::Update()
 {
-	for(auto& object : m_objects)
+	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
 	{
-		object->Update();
+		i->get()->Update();
+	}
+}
+
+void dae::Scene::FixedUpdate()
+{
+	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
+	{
+		i->get()->FixedUpdate();
 	}
 }
 
 void Scene::Render() const
 {
-	for (const auto& object : m_objects)
+	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
 	{
-		object->Render();
+		i->get()->Render();
 	}
 }
 

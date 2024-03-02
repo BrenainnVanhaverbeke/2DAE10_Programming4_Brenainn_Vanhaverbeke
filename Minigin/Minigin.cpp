@@ -1,14 +1,17 @@
+#include "pch.h"
 #include <stdexcept>
 #define WIN32_LEAN_AND_MEAN 
 #include <windows.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <thread>
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "EngineGlobals.h"
 
 SDL_Window* g_window{};
 
@@ -41,6 +44,7 @@ void PrintSDLVersion()
 }
 
 dae::Minigin::Minigin(const std::string &dataPath)
+	: m_TargetFPS{ 60 }
 {
 	PrintSDLVersion();
 	
@@ -77,18 +81,41 @@ dae::Minigin::~Minigin()
 
 void dae::Minigin::Run(const std::function<void()>& load)
 {
+	const float msPerFrame = 1.0f / m_TargetFPS;
 	load();
 
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
+
 	// todo: this update loop could use some work.
 	bool doContinue = true;
+	using namespace std::chrono;
+	steady_clock::time_point lastTime = high_resolution_clock::now();
+	float lag = 0.0f;
 	while (doContinue)
 	{
+		const steady_clock::time_point start = high_resolution_clock::now();
+		EngineGlobals::SetDeltaTime(duration<float>(start - lastTime).count());
+		lastTime = start;
+
 		doContinue = input.ProcessInput();
+
+		while (EngineGlobals::GetFixedTimeStep() <= lag)
+		{
+			sceneManager.FixedUpdate();
+			lag -= EngineGlobals::GetFixedTimeStep();
+		}
 		sceneManager.Update();
 		renderer.Render();
+
+		const auto end = high_resolution_clock::now();
+		const auto sleepTime = start + milliseconds(static_cast<long long>(msPerFrame * 1000)) - end;
+
+		if (milliseconds(0) < sleepTime)
+		{
+			std::this_thread::sleep_for(sleepTime);
+		}
 	}
 }
