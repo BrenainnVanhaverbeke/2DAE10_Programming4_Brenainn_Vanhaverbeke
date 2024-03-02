@@ -1,19 +1,28 @@
+#include "pch.h"
 #include "SceneManager.h"
 #include "Scene.h"
 
 void dae::SceneManager::Update()
 {
-	for(auto& scene : m_scenes)
+	for(auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
 	{
-		scene->Update();
+		i->get()->Update();
+	}
+}
+
+void dae::SceneManager::FixedUpdate()
+{
+	for (auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
+	{
+		i->get()->FixedUpdate();
 	}
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& scene : m_scenes)
+	for (auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
 	{
-		scene->Render();
+		i->get()->Render();
 	}
 }
 

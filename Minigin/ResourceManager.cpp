@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <stdexcept>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
