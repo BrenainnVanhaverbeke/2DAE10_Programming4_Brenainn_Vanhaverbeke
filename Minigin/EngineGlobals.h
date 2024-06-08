@@ -26,14 +26,10 @@ namespace dae
 		static void SetFixedTimeStep(const float fixedTimeStep)
 		{
 			m_FixedTimeStep = fixedTimeStep;
-			// TODO: Update setting file.
+			// TODO: Get time step from setting file.
 		}
 
 		static float m_DeltaTime;
 		static float m_FixedTimeStep;
 	};
-
-	float EngineGlobals::m_DeltaTime{ 0 };
-	// TODO: Read from setting file.
-	float EngineGlobals::m_FixedTimeStep{ 0.02f };
 }
