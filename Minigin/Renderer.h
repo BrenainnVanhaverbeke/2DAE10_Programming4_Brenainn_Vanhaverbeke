@@ -1,10 +1,14 @@
 #pragma once
 #include <SDL.h>
+#include <unordered_map>
+#include <set>
+#include <memory>
 #include "Singleton.h"
 
 namespace dae
 {
 	class Texture2D;
+	class RenderComponent;
 	/**
 	 * Simple RAII wrapper for the SDL renderer
 	 */
@@ -25,6 +29,15 @@ namespace dae
 
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+
+		unsigned int RegisterComponent(std::shared_ptr<RenderComponent> component);
+		void DeregisterComponent(std::shared_ptr<RenderComponent> component);
+
+	private: 
+		//std::unordered_map<unsigned int, RenderComponent*> m_RenderComponents;
+		std::multiset<std::shared_ptr<RenderComponent>> m_RenderComponents;
+		unsigned int m_NextId{ 0 };
+
+		void RenderComponents() const;
 	};
 }
-

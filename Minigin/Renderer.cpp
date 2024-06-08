@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "Texture2D.h"
+#include "RenderComponent.h"
 
 int GetOpenGLDriverIndex()
 {
@@ -34,9 +35,11 @@ void dae::Renderer::Render() const
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_renderer);
 
-	SceneManager::GetInstance().Render();
+	//SceneManager::GetInstance().Render();
+
 	
 	SDL_RenderPresent(m_renderer);
+	RenderComponents();
 }
 
 void dae::Renderer::Destroy()
@@ -68,3 +71,48 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 }
 
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
+
+unsigned int dae::Renderer::RegisterComponent(std::shared_ptr<RenderComponent> component)
+{
+	m_RenderComponents.insert(component);
+	return m_NextId++;
+}
+
+void dae::Renderer::DeregisterComponent(std::shared_ptr<RenderComponent> component)
+{
+	auto it{ m_RenderComponents.find(component) };
+	if (it != m_RenderComponents.end())
+		m_RenderComponents.erase(it);
+}
+
+//unsigned int dae::Renderer::RegisterComponent(RenderComponent* component)
+//{
+//	unsigned int givenId{ m_NextId };
+//	++m_NextId;
+//	return givenId;
+//}
+//
+//void dae::Renderer::DeregisterComponent(RenderComponent* component)
+//{
+//
+//}
+//
+//void dae::Renderer::DeregisterComponent(unsigned int id)
+//{
+//	RenderComponent* test{};
+//	//auto zIndices{ m_RenderComponents.equal_range(test) };
+//	//auto iterator{ m_RenderComponents.find(id) };
+//	//if (iterator != m_RenderComponents.end())
+//	//{
+//	//	m_RenderComponents.erase(iterator);
+//	//}
+//}
+
+
+void dae::Renderer::RenderComponents() const
+{
+	for (auto iterator{ m_RenderComponents.begin() }; iterator != m_RenderComponents.end(); ++iterator)
+	{
+		(*iterator)->Render();
+	}
+}

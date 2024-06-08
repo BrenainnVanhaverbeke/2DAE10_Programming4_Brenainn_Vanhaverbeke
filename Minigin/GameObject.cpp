@@ -42,6 +42,11 @@ void dae::GameObject::SetPosition(float x, float y)
 	m_transform.SetPosition(x, y, 0.0f);
 }
 
+void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent>& component)
+{
+	m_Components.push_back(component);
+}
+
 void dae::GameObject::AddMessages(const std::shared_ptr<BaseComponent>& component)
 {
 	std::vector<dae::MessageWrapper*>& messages{ component->GetMessages() };

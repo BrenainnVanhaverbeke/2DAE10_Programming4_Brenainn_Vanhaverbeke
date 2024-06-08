@@ -21,6 +21,7 @@ namespace dae
 		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
 
+		void AddComponent(std::shared_ptr<BaseComponent>& component);
 
 		GameObject() = default;
 		virtual ~GameObject();
