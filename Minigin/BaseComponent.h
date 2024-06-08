@@ -4,7 +4,6 @@
 
 namespace dae
 {
-	class GameObject;
 	class MessageWrapper;
 
 	class BaseComponent
@@ -20,7 +19,6 @@ namespace dae
 
 		virtual void Update() = 0;
 		virtual void FixedUpdate() = 0;
-		virtual void Render() const = 0;
 		virtual void ReceiveMessage(const MessageWrapper* pMessage) = 0;
 		virtual std::vector<MessageWrapper*>& GetMessages() final;
 		
