@@ -31,7 +31,7 @@ void Scene::Update()
 {
 	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
 	{
-		i->get()->Update();
+		(*i)->Update();
 	}
 }
 
@@ -39,15 +39,15 @@ void dae::Scene::FixedUpdate()
 {
 	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
 	{
-		i->get()->FixedUpdate();
+		(*i)->FixedUpdate();
 	}
 }
 
 void Scene::Render() const
 {
-	for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
-	{
-		i->get()->Render();
-	}
+	//for (auto i = m_Objects.begin(); i != m_Objects.end(); i++)
+	//{
+	//	(*i)->Render();
+	//}
 }
 
