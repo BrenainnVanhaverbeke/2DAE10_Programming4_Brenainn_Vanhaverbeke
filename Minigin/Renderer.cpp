@@ -73,10 +73,15 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
 
-unsigned int dae::Renderer::RegisterComponent(RenderComponent* component)
+unsigned int dae::Renderer::GetNextId()
 {
-	m_RenderComponents.insert(component);
 	return m_NextId++;
+}
+
+void dae::Renderer::RegisterComponent(RenderComponent* component)
+{
+	std::cout << "Inserting component with z-index: " << component->GetZIndex() << ", and id: " << component->GetId() << std::endl;
+	m_RenderComponents.insert(component);
 }
 
 void dae::Renderer::DeregisterComponent(RenderComponent* component)
