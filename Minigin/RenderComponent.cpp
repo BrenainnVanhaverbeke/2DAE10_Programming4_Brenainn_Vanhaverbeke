@@ -1,6 +1,6 @@
 #include "RenderComponent.h"
 #include "Renderer.h"
-#include <memory>
+#include <iostream>
 
 dae::RenderComponent::RenderComponent(Transform& parentTransform, int zIndex)
 	: RenderComponent(parentTransform, Transform{}, zIndex)
@@ -10,8 +10,9 @@ dae::RenderComponent::RenderComponent(Transform& parentTransform, int zIndex)
 dae::RenderComponent::RenderComponent(Transform& parentTransform, const Transform& transform, int zIndex)
 	: BaseComponent(parentTransform, transform)
 	, m_zIndex{ zIndex }
-	, m_Id{ Renderer::GetInstance().RegisterComponent(this) }
+	, m_Id{ Renderer::GetInstance().GetNextId() }
 {
+	Renderer::GetInstance().RegisterComponent(this);
 }
 
 dae::RenderComponent::~RenderComponent()
