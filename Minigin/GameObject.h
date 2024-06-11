@@ -20,6 +20,7 @@ namespace dae
 
 		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
+		Transform& GetPosition();
 
 		void AddComponent(std::shared_ptr<BaseComponent>& component);
 

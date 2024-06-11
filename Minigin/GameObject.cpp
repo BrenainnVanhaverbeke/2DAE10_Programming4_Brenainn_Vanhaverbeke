@@ -42,6 +42,11 @@ void dae::GameObject::SetPosition(float x, float y)
 	m_transform.SetPosition(x, y, 0.0f);
 }
 
+dae::Transform& dae::GameObject::GetPosition()
+{
+	return m_transform;
+}
+
 void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent>& component)
 {
 	m_Components.push_back(component);
