@@ -2,7 +2,6 @@
 #include "MessageWrapper.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include <iostream>
 
 dae::ImageComponent::~ImageComponent()
 {
