@@ -6,7 +6,7 @@ void dae::SceneManager::Update()
 {
 	for(auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
 	{
-		i->get()->Update();
+		(*i)->Update();
 	}
 }
 
@@ -14,7 +14,7 @@ void dae::SceneManager::FixedUpdate()
 {
 	for (auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
 	{
-		i->get()->FixedUpdate();
+		(*i)->FixedUpdate();
 	}
 }
 
@@ -22,7 +22,7 @@ void dae::SceneManager::Render()
 {
 	for (auto i = m_scenes.begin(); i != m_scenes.end(); ++i)
 	{
-		i->get()->Render();
+		(*i)->Render();
 	}
 }
 
