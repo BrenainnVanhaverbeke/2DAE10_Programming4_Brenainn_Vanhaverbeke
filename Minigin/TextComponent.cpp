@@ -1,0 +1,68 @@
+#include "TextComponent.h"
+#include "Renderer.h"
+#include "ResourceManager.h"
+#include <stdexcept>
+#include "Font.h"
+#include "Texture2D.h"
+
+dae::TextComponent::TextComponent(std::string text, std::string fontPath, int fontSize, Transform& parentTransform, int zIndex)
+	: TextComponent(text, fontPath, fontSize, parentTransform, Transform{}, zIndex)
+{
+}
+
+dae::TextComponent::TextComponent(std::string text, std::string fontPath, int fontSize, Transform& parentTransform, const Transform& relativeTransform, int zIndex)
+	: RenderComponent(parentTransform, relativeTransform, zIndex)
+	, m_Text{ text }
+	, m_FontPath{ fontPath }
+	, m_TextChanged{ true }
+	, m_TextColour{ 255, 255, 255, 255 }
+	, m_Font{ ResourceManager::GetInstance().LoadFont(fontPath, fontSize) }
+{
+}
+
+void dae::TextComponent::Render() const
+{
+	Transform transform{ m_ParentTransform + m_RelativeTransform };
+	const glm::vec3& position{ transform.GetPosition() };
+	Renderer::GetInstance().RenderTexture(*m_TextTexture, position.x, position.y);
+}
+
+void dae::TextComponent::Update()
+{
+	if (m_TextChanged)
+		UpdateText();
+}
+
+void dae::TextComponent::FixedUpdate()
+{
+}
+
+void dae::TextComponent::ReceiveMessage(const MessageWrapper* pMessage)
+{
+	// Placeholder
+	(void)pMessage;
+}
+
+void dae::TextComponent::SetText(std::string text)
+{
+	m_Text = text;
+	m_TextChanged = true;
+}
+
+std::string dae::TextComponent::GetText() const
+{
+	return m_Text;
+}
+
+void dae::TextComponent::UpdateText()
+{
+	const auto surface{ TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_TextColour)};
+	if (surface == nullptr)
+		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
+	auto texture{ SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surface) };
+	if (texture == nullptr)
+		throw std::runtime_error(std::string("Create text texture from surface failed.") + SDL_GetError());
+	SDL_FreeSurface(surface);
+	m_TextTexture = std::make_shared<Texture2D>(texture);
+	m_TextChanged = false;
+}
