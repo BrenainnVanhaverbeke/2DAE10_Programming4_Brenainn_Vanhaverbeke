@@ -30,13 +30,17 @@ namespace dae
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 
-		unsigned int RegisterComponent(std::shared_ptr<RenderComponent> component);
-		void DeregisterComponent(std::shared_ptr<RenderComponent> component);
+		unsigned int RegisterComponent(RenderComponent* component);
+		void DeregisterComponent(RenderComponent* component);
 
 	private: 
+		struct RenderComponentComparer {
+			bool operator() (const RenderComponent* lhs, const RenderComponent* rhs) const;
+		};
 		//std::unordered_map<unsigned int, RenderComponent*> m_RenderComponents;
-		std::multiset<std::shared_ptr<RenderComponent>> m_RenderComponents;
+		std::multiset<RenderComponent*, RenderComponentComparer> m_RenderComponents;
 		unsigned int m_NextId{ 0 };
+
 
 		void RenderComponents() const;
 	};

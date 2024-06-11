@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include "RenderComponent.h"
+#include <iostream>
 
 int GetOpenGLDriverIndex()
 {
@@ -23,7 +24,7 @@ void dae::Renderer::Init(SDL_Window* window)
 {
 	m_window = window;
 	m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
-	if (m_renderer == nullptr) 
+	if (m_renderer == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
@@ -37,9 +38,9 @@ void dae::Renderer::Render() const
 
 	//SceneManager::GetInstance().Render();
 
-	
-	SDL_RenderPresent(m_renderer);
 	RenderComponents();
+
+	SDL_RenderPresent(m_renderer);
 }
 
 void dae::Renderer::Destroy()
@@ -72,42 +73,18 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
 
-unsigned int dae::Renderer::RegisterComponent(std::shared_ptr<RenderComponent> component)
+unsigned int dae::Renderer::RegisterComponent(RenderComponent* component)
 {
 	m_RenderComponents.insert(component);
 	return m_NextId++;
 }
 
-void dae::Renderer::DeregisterComponent(std::shared_ptr<RenderComponent> component)
+void dae::Renderer::DeregisterComponent(RenderComponent* component)
 {
 	auto it{ m_RenderComponents.find(component) };
 	if (it != m_RenderComponents.end())
 		m_RenderComponents.erase(it);
 }
-
-//unsigned int dae::Renderer::RegisterComponent(RenderComponent* component)
-//{
-//	unsigned int givenId{ m_NextId };
-//	++m_NextId;
-//	return givenId;
-//}
-//
-//void dae::Renderer::DeregisterComponent(RenderComponent* component)
-//{
-//
-//}
-//
-//void dae::Renderer::DeregisterComponent(unsigned int id)
-//{
-//	RenderComponent* test{};
-//	//auto zIndices{ m_RenderComponents.equal_range(test) };
-//	//auto iterator{ m_RenderComponents.find(id) };
-//	//if (iterator != m_RenderComponents.end())
-//	//{
-//	//	m_RenderComponents.erase(iterator);
-//	//}
-//}
-
 
 void dae::Renderer::RenderComponents() const
 {
@@ -115,4 +92,11 @@ void dae::Renderer::RenderComponents() const
 	{
 		(*iterator)->Render();
 	}
+}
+
+bool dae::Renderer::RenderComponentComparer::operator()(const RenderComponent* lhs, const RenderComponent* rhs) const
+{
+	if (lhs->GetZIndex() != rhs->GetZIndex())
+		return lhs->GetZIndex() < rhs->GetZIndex();
+	return lhs->GetId() < rhs->GetId();
 }
