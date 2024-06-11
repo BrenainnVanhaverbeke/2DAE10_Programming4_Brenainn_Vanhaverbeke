@@ -6,7 +6,9 @@ namespace dae
 	class RenderComponent  : public BaseComponent
 	{
 	public:
-		RenderComponent(int zIndex = 0);
+		RenderComponent(Transform& parentTransform, int zIndex = 0);
+		RenderComponent(Transform& parentTransform, const Transform& transform, int zIndex = 0);
+
 		virtual ~RenderComponent();
 
 		virtual void Render() const = 0;
@@ -21,8 +23,8 @@ namespace dae
 
 		bool operator==(const RenderComponent& other);
 
-	private:
-		unsigned int m_Id;
+	protected:
 		int m_zIndex;
+		unsigned int m_Id;
 	};
 }

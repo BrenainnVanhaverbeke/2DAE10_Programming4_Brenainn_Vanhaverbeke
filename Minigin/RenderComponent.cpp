@@ -2,16 +2,21 @@
 #include "Renderer.h"
 #include <memory>
 
-dae::RenderComponent::RenderComponent(int zIndex)
-	: BaseComponent()
-	, m_Id{ Renderer::GetInstance().RegisterComponent(std::shared_ptr<RenderComponent>(this)) }
+dae::RenderComponent::RenderComponent(Transform& parentTransform, int zIndex)
+	: RenderComponent(parentTransform, Transform{}, zIndex)
+{
+}
+
+dae::RenderComponent::RenderComponent(Transform& parentTransform, const Transform& transform, int zIndex)
+	: BaseComponent(parentTransform, transform)
 	, m_zIndex{ zIndex }
+	, m_Id{ Renderer::GetInstance().RegisterComponent(this) }
 {
 }
 
 dae::RenderComponent::~RenderComponent()
 {
-	Renderer::GetInstance().DeregisterComponent(std::shared_ptr<RenderComponent>(this));
+	Renderer::GetInstance().DeregisterComponent(this);
 }
 
 unsigned int dae::RenderComponent::GetId() const
@@ -26,7 +31,10 @@ int dae::RenderComponent::GetZIndex() const
 
 bool dae::RenderComponent::operator<(const RenderComponent& other)
 {
-	return m_zIndex <= other.m_zIndex;
+	if (m_zIndex != other.m_zIndex) {
+		return m_zIndex < other.m_zIndex;
+	}
+	return m_Id < other.m_Id; // Secondary criterion
 }
 
 bool dae::RenderComponent::operator==(const RenderComponent& other)
