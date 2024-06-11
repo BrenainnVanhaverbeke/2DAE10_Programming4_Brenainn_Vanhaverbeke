@@ -4,7 +4,6 @@
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include "RenderComponent.h"
-#include <iostream>
 
 int GetOpenGLDriverIndex()
 {
@@ -80,7 +79,6 @@ unsigned int dae::Renderer::GetNextId()
 
 void dae::Renderer::RegisterComponent(RenderComponent* component)
 {
-	std::cout << "Inserting component with z-index: " << component->GetZIndex() << ", and id: " << component->GetId() << std::endl;
 	m_RenderComponents.insert(component);
 }
 
