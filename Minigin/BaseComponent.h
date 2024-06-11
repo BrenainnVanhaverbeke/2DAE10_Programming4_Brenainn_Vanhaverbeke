@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include "Transform.h"
+#include <ostream>
 
 namespace dae
 {
@@ -9,7 +11,8 @@ namespace dae
 	class BaseComponent
 	{
 	public:
-		explicit BaseComponent();
+		BaseComponent(Transform& parentTransform);
+		BaseComponent(Transform& parentTransform, const Transform& relativeTransform);
 		virtual ~BaseComponent();
 
 		BaseComponent(const BaseComponent& other) = delete;
@@ -21,8 +24,12 @@ namespace dae
 		virtual void FixedUpdate() = 0;
 		virtual void ReceiveMessage(const MessageWrapper* pMessage) = 0;
 		virtual std::vector<MessageWrapper*>& GetMessages() final;
-		
+		virtual void SetTransform(const Transform& transform) final;
+
 	protected:
+		Transform& m_ParentTransform;
+		Transform m_RelativeTransform;
+
 		std::vector<MessageWrapper*> m_Messages;
 	};
 }
