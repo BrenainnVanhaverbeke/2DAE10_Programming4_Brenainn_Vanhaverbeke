@@ -70,7 +70,6 @@ std::string dae::TextComponent::GetText() const
 
 void dae::TextComponent::UpdateText()
 {
-	std::cout << "Received text: " << m_Text << std::endl;
 	const auto surface{ TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_TextColour) };
 	if (surface == nullptr)
 		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
