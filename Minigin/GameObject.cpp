@@ -11,18 +11,18 @@ dae::GameObject::~GameObject() = default;
 void dae::GameObject::Update()
 {
 	UpdateComponents([](std::shared_ptr<BaseComponent>& component)
-	{
-		component->Update();
-	});
+		{
+			component->Update();
+		});
 	HandleMessages();
 }
 
 void dae::GameObject::FixedUpdate()
 {
 	UpdateComponents([](std::shared_ptr<BaseComponent>& component)
-	{
-		component->FixedUpdate();
-	});
+		{
+			component->FixedUpdate();
+		});
 	HandleMessages();
 }
 
@@ -55,9 +55,9 @@ void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent>& component)
 void dae::GameObject::AddMessages(const std::shared_ptr<BaseComponent>& component)
 {
 	std::vector<dae::MessageWrapper*>& messages{ component->GetMessages() };
-	for (MessageWrapper* pMessage : messages)
-		m_MessageQueue.push(pMessage);
-
+	for (auto it{ messages.begin() }; it != messages.end(); ++it)
+		m_MessageQueue.push(*it);
+	messages.clear();
 }
 
 void dae::GameObject::HandleMessages()
