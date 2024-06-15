@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include "Font.h"
 #include "Texture2D.h"
+#include "MessageWrapper.h"
+#include <iostream>
 
 dae::TextComponent::TextComponent(std::string text, std::string fontPath, int fontSize, Transform& parentTransform, int zIndex)
 	: TextComponent(text, fontPath, fontSize, parentTransform, Transform{}, zIndex)
@@ -22,15 +24,25 @@ dae::TextComponent::TextComponent(std::string text, std::string fontPath, int fo
 
 void dae::TextComponent::Render() const
 {
-	Transform transform{ m_ParentTransform + m_RelativeTransform };
-	const glm::vec3& position{ transform.GetPosition() };
-	Renderer::GetInstance().RenderTexture(*m_TextTexture, position.x, position.y);
+	if (m_TextTexture)
+	{
+		Transform transform{ m_ParentTransform + m_RelativeTransform };
+		const glm::vec3& position{ transform.GetPosition() };
+		Renderer::GetInstance().RenderTexture(*m_TextTexture, position.x, position.y);
+	}
 }
 
 void dae::TextComponent::Update()
 {
-	if (m_TextChanged)
-		UpdateText();
+	try
+	{
+		if (m_TextChanged)
+			UpdateText();
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Error updating text.\n";
+	}
 }
 
 void dae::TextComponent::FixedUpdate()
@@ -39,11 +51,13 @@ void dae::TextComponent::FixedUpdate()
 
 void dae::TextComponent::ReceiveMessage(const MessageWrapper* pMessage)
 {
-	// Placeholder
-	(void)pMessage;
+	if (pMessage->GetType() == MessageWrapper::MessageTypes::ChangeText)
+	{
+		SetText(pMessage->GetContent().stringValue);
+	}
 }
 
-void dae::TextComponent::SetText(std::string text)
+void dae::TextComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_TextChanged = true;
@@ -56,7 +70,8 @@ std::string dae::TextComponent::GetText() const
 
 void dae::TextComponent::UpdateText()
 {
-	const auto surface{ TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_TextColour)};
+	std::cout << "Received text: " << m_Text << std::endl;
+	const auto surface{ TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_TextColour) };
 	if (surface == nullptr)
 		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
 	auto texture{ SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surface) };

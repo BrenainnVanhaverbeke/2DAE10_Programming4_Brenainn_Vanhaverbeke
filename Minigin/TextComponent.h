@@ -23,7 +23,7 @@ namespace dae
 		virtual void FixedUpdate() override;
 		virtual void ReceiveMessage(const MessageWrapper* pMessage) override;
 
-		void SetText(std::string text);
+		void SetText(const std::string& text);
 		std::string  GetText() const;
 
 	private:
