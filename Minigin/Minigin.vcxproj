@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="EngineGlobals.h" />
+    <ClInclude Include="FixedFpsScript.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="ImageComponent.h" />
@@ -198,6 +199,7 @@
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="EngineGlobals.cpp" />
+    <ClCompile Include="FixedFpsScript.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ImageComponent.cpp" />

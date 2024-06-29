@@ -78,6 +78,9 @@
     <ClInclude Include="FpsScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FixedFpsScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -141,6 +144,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FpsScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedFpsScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
