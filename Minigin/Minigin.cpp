@@ -35,20 +35,20 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 
 	SDL_TTF_VERSION(&version)
-	printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
+		printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
+			version.major, version.minor, version.patch);
 
 	version = *TTF_Linked_Version();
 	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
-	: m_TargetFPS{ 60 }
+dae::Minigin::Minigin(const std::string& dataPath)
+	: m_TargetFPS{ 120 }
 {
 	PrintSDLVersion();
-	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -61,7 +61,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		480,
 		SDL_WINDOW_OPENGL
 	);
-	if (g_window == nullptr) 
+	if (g_window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -99,7 +99,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		const steady_clock::time_point start = high_resolution_clock::now();
 		EngineGlobals::SetDeltaTime(duration<float>(start - lastTime).count());
 		lastTime = start;
-
+		lag += EngineGlobals::GetDeltaTime();
 		doContinue = input.ProcessInput();
 
 		while (EngineGlobals::GetFixedTimeStep() <= lag)
@@ -109,7 +109,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		}
 		sceneManager.Update();
 		renderer.Render();
-
 		const auto end = high_resolution_clock::now();
 		const auto sleepTime = start + milliseconds(static_cast<long long>(msPerFrame * 1000)) - end;
 
